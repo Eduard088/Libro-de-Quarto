@@ -1,0 +1,2322 @@
+ggplot(data=diffed2015_1_f1)+
+  geom_boxplot()
+
+
+ggplot(data = tablas_juntas)+
+  geom_point(mapping = aes(x = Año, y = Votos)) +
+  labs(
+    x = "Partido Político", 
+    y = "Número de Votos", 
+    title = "Relación entre los Años de Escolaridad y el Ingreso Percibido",
+    caption = "Elaboración propia con datos del INEGI, 2020"
+  ) +
+  guides(color = "none")
+
+
+
+
+ggplot(data = subset(tablas_juntas, Sexo == "Hombres")) +
+  geom_bar(mapping = aes(x = Partido, y = Votos, fill = Partido), stat = "identity") +
+  labs(
+    x = "Partido Político", 
+    y = "Número de Votos",
+    fill = "Partido",
+    title = "Votos Percibidos por los Partidos Políticos en México",
+    subtitle="Cámara de Diputados 2015-2021",
+    caption = "Elaboración propia con datos del INEGI, 2020"
+  ) +
+  facet_wrap(~Año) +
+  scale_fill_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",  # un color neutral armonioso
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  )) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    axis.text.x = element_blank(),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+
+
+ggplot(data = tablas_juntas) +
+  geom_bar(mapping = aes(x = reorder(Partido, -Curules), y = Curules, fill = Partido), stat = "identity") +
+    labs(
+      x = "Partido Político", 
+      y = "Número de Curules",
+      fill = "Partido",
+      title = "Cantidad de Curules Percibidos por los Partidos Políticos en México",
+      subtitle = "Cámara de Diputados 2015-2021",
+      caption = "Elaboración propia con datos del INEGI"
+    ) +
+    facet_wrap(~Año) +
+    scale_fill_manual(values = c(
+      "MC" = "orange",
+      "MORENA" = "darkred",
+      "NUAL" = "skyblue",
+      "Otro" = "gray50",
+      "PAN" = "blue",
+      "PES" = "navy",
+      "PRD" = "yellow",
+      "PRI" = "green",
+      "PT" = "red",
+      "PVEM" = "lightgreen"
+    ))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    axis.text.x = element_blank(),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+
+
+ggplot(data = senfed2018_2_f1) +
+  geom_bar(mapping = aes(x = reorder(Partido, -Curules), y = Curules, fill = Partido), stat = "identity") +
+  labs(
+    x = "Partido Político", 
+    y = "Número de Curules",
+    fill = "Partido",
+    title = "Cantidad de Curules Percibidos por los Partidos Políticos en México",
+    subtitle = "Cámara de Senadores 2018",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  facet_wrap(~Sexo) +
+  scale_fill_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  ))+
+  theme(axis.text.x = element_blank())+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+  
+
+resultados_votos <- tablas_juntas %>%
+  filter(Sexo=="Hombres")%>%
+  group_by(Año, Partido) %>%
+  summarise(total_votos = sum(Votos, na.rm = TRUE)) %>% # Calcular el total de curules por Año y Partido
+  arrange(Año, desc(total_votos)) %>% # Ordenar en orden descendente de total de curules para cada año
+  group_by(Año) %>%
+  mutate(ranking = row_number()) %>% # Asignar un ranking para identificar los mejores y peores
+  filter(ranking <= 3 | ranking > (n() - 3)) %>% # Filtrar los tres mejores y los tres peores resultados
+  ungroup() %>%
+  arrange(Año, ranking)
+
+
+resultados_partidos <- tablas_juntas %>%
+  group_by(Año, Partido) %>%
+  summarise(total_curules = sum(Curules, na.rm = TRUE)) %>% # Calcular el total de curules por Año y Partido
+  arrange(Año, desc(total_curules)) %>% # Ordenar en orden descendente de total de curules para cada año
+  group_by(Año) %>%
+  mutate(ranking = row_number()) %>% # Asignar un ranking para identificar los mejores y peores
+  filter(ranking <= 3 | ranking > (n() - 3)) %>% # Filtrar los tres mejores y los tres peores resultados
+  ungroup() %>%
+  arrange(Año, ranking)
+
+
+tablas_juntas %>%
+  group_by(Año, Sexo) %>%
+  summarise(total_curules = sum(Curules, na.rm = TRUE))
+
+
+
+
+tablas_juntas$Sexo <- as.factor(tablas_juntas$Sexo)
+
+tablas_juntas <- bind_rows(dipfed2015_1_f1, dipfed2018_1_f1, dipfed2021_1_f1)
+
+dipfed2015_1_f1  <- dipfed2015_1_f1 %>%
+rename(Votos = `sum(Votos)`, Proporcion = `sum(Proporcion/32)`)
+
+
+
+congresos_locales <- read_excel("C:/Users/Eduardo/Documents/Tibble_mlar.xlsx")
+
+
+ggplot(data = congresos_locales) +
+  geom_jitter(mapping = aes(x = Año, y = Curules, color = Sexo), width = 0.2, height = 0) +
+  geom_boxplot(mapping=aes(x=Año, y=Curules))+
+    labs(
+    x = "Partido Político", 
+    y = "Número de Curules",
+    fill = "Partido",
+    title = "Cantidad de Curules Percibidos por los Partidos Políticos en México",
+    subtitle = "Cámara de Senadores 2018",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  )
+
+
+
+
+
+ggplot(data = congresos_locales) +
+  geom_jitter(mapping = aes(x = Partido, y = Curules, color = Sexo), width = 0.2, height = 0) +
+  geom_boxplot(mapping = aes(x = Partido, y = Curules)) +
+  labs(
+    x = "Partido Político", 
+    y = "Número de Curules",
+    color = "Sexo",
+    title = "Cantidad de Curules Percibidos por los Partidos Políticos en México",
+    subtitle = "Congresos Locales 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_y_continuous(breaks = seq(0, 24, by=4)) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+ggplot(data = congresos_locales) +
+  geom_jitter(mapping = aes(x = Sexo, y = Curules, color = Sexo), width = 0.2, height = 0) +
+  geom_boxplot(mapping = aes(x = Sexo, y = Curules)) +
+  labs(
+    x = "Sexo", 
+    y = "Número de Curules",
+    color = "Sexo",
+    title = "Cantidad de Curules Percibidos por los Partidos Políticos en México",
+    subtitle = "Cámara de Senadores 2018",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_color_manual(values = c("Hombres" = "blue4", "Mujeres" = "violet", "No Binario" = "red3")) +
+  scale_y_continuous(breaks = seq(0, 234, by=2)) +
+  theme_minimal()
+
+
+
+###
+congreso_tbl <- congresos_locales %>%
+  group_by(Año, Partido)%>%
+  reframe(sum(Curules))%>%
+  rename(Curules=`sum(Curules)`)
+
+
+
+ggplot(data = subset(tablas_juntas, Partido == "Hombres")) +
+  
+ggplot(data = congresos_locales) +
+  geom_bar(mapping = aes(x = Partido, y = Curules, fill = Sexo), 
+  stat = "identity", position = "fill") +
+  labs(
+    x = "Proceso Electoral", 
+    y = "Número de Curules",
+    color = "Facción",
+    title = "Porcentaje de Curules de los Partidos Políticos en México",
+    subtitle = "Según el Sexo 2015-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_fill_manual(values = c("Hombres" = "skyblue", "Mujeres" = "violet" ))+
+  theme_minimal()
+
+congresos_locales_totales %>%
+  summarise(Curules = sum(Curules))
+
+
+
+
+congresos_locales_totales <- congresos_locales %>%
+  group_by(Partido, Sexo) %>%
+  summarise(Curules = sum(Curules), .groups = 'drop')
+
+# Crear el gráfico
+ggplot(data = congresos_locales_totales) +
+  geom_bar(mapping = aes(x = Partido, y = Curules, fill = Sexo), 
+           stat = "identity", position = "fill") +
+  geom_text(mapping = aes(x = Partido, y = Curules, label = Curules, group = Sexo),
+            position = position_fill(vjust = 0.5), color = "white", size = 3) +
+  labs(
+    x = "Partido Político", 
+    y = "Porcentaje",
+    color = "Facción",
+    title = "Porcentaje de Curules de los Partidos Políticos en México",
+    subtitle = "Según el Sexo 2015-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_fill_manual(values = c("Hombres" = "skyblue", "Mujeres" = "violet")) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+cong <- congresos_locales %>%
+  distinct(Año, ID_ESTADO) %>%    # Filtrar combinaciones únicas de Año e ID_ESTADO
+  group_by(Año) %>%               # Agrupar por Año
+  summarise(conteo_estados = n())
+
+
+
+ggplot(data = cong) +
+  geom_line(mapping = aes(x = Año, y = conteo_estados), color = "#2C3E50", size = 1.2) +
+  geom_point(mapping = aes(x = Año, y = conteo_estados), color = "#E74C3C", size = 3) +
+  labs(
+    x = "Año", 
+    y = "Procesos Electorales",
+    title = "Relación de la Cantidad de Procesos Electorales por Año",
+    subtitle = "Congresos Locales 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_x_continuous(breaks = seq(2015, 2022, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+congresos_locales_sex <- congresos_locales %>%
+  group_by(Año, ID_ESTADO, Sexo) %>%
+  reframe(Curules=sum(Curules))
+
+
+
+resultados <- congresos_locales_sex %>%
+  group_by(Año, ID_ESTADO, Sexo) %>%
+  summarize(total_curules = sum(Curules), .groups = "drop") %>%
+  pivot_wider(names_from = Sexo, values_from = total_curules, values_fill = 0) %>%
+  mutate(Mayoria = case_when(
+    Hombres > Mujeres ~ "Hombres",
+    Mujeres > Hombres ~ "Mujeres",
+    TRUE ~ "Empate"
+  )) %>%
+  group_by(Año, Mayoria) %>%
+  summarize(conteo_estados = n(), .groups = "drop") %>%
+  pivot_wider(names_from = Mayoria, values_from = conteo_estados, values_fill = 0)
+
+
+
+resultados_1 <- resultados %>%
+  gather(key=Sexo, value = Curules, Hombres:Mujeres)
+
+
+ggplot(data = resultados_1) +
+  geom_line(mapping = aes(x = Año, y = Curules, color = Sexo), color = "#2C3E50", size = 1.2) +
+  geom_point(mapping = aes(x = Año, y = Curules), color = "#E74C3C", size = 3) +
+  labs(
+    x = "Año", 
+    y = "Número de Congresos Locales",
+    title = "Mayoría en los Congresos Locales en México",
+    subtitle = "Según el Sexo 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_color_manual(values = c("Hombres" = "skyblue", "Mujeres" = "violet")) +
+  scale_x_continuous(breaks = seq(2015, 2022, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+ggplot(data = resultados_1) +
+  geom_line(mapping = aes(x = Año, y = Curules, color = Sexo), size = 1.2) +
+  geom_point(mapping = aes(x = Año, y = Curules, color = Sexo), size = 3) +
+  labs(
+    x = "Año", 
+    y = "Número de Congresos Locales",
+    title = "Mayoría en los Congresos Locales en México",
+    subtitle = "Según el Sexo 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_color_manual(values = c("Hombres" = "skyblue", "Mujeres" = "violet")) +
+  scale_x_continuous(breaks = seq(2015, 2022, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+ideologia <- congresos_locales %>%
+  group_by(Año, Espectro) %>%    # Filtrar combinaciones únicas de Año e ID_ESTADO
+  summarise(Curules = sum(Curules))
+
+
+ggplot(data = ideologia) +
+  geom_line(mapping = aes(x = Año, y = Curules, color = Espectro), size = 1.2) +
+  geom_point(mapping = aes(x = Año, y = Curules, color = Espectro), size = 3) +
+  labs(
+    x = "Año", 
+    y = "Número de Curules",
+    title = "Curules en México",
+    subtitle = "Según el Espectro Político 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_x_continuous(breaks = seq(2015, 2022, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 800, by = 200)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+ggplot(data = ideologia) +
+  geom_line(mapping = aes(x = Año, y = Curules, color = Espectro), size = 1.2) +
+  geom_point(mapping = aes(x = Año, y = Curules, color = Espectro), size = 3) +
+  labs(
+    x = "Año", 
+    y = "Número de Curules",
+    title = "Dstribución de Curules en México",
+    subtitle = "Según el Espectro Político 2014-2022",
+    caption = "Elaboración propia con datos del INEGI e INE"
+  ) +
+  scale_color_manual(values = c("Derecha Extravagante" = "#0887f1", "Izquierda Indefinida" = "#900C3F", "Movimiento Alterno" = "#c99cf3" ))+
+  scale_x_continuous(breaks = seq(2015, 2022, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 800, by = 200)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+ideologia <- ideologia %>%
+  group_by(Espectro) %>%    # Filtrar combinaciones únicas de Año e ID_ESTADO
+  summarise(Curules = sum(Curules))
+
+
+
+gubernaturas <- read_csv("C:/Users/Eduardo/Documents/PC/ListaEjec.csv")
+
+
+gubernaturas_1 <- gubernaturas %>%
+  group_by(Año, Sexo) %>%
+  reframe(Cantidad = n())
+
+gubernaturas_2 <- gubernaturas %>%
+  group_by(Año, Sexo) %>%
+  reframe(Cantidad = n())
+
+
+ggplot(gubernaturas_1, aes(x = Año, y = Cantidad, group = Sexo, color = Sexo)) +
+  geom_line(aes(color = "grey"), linetype = "dotted") +  # Líneas entre puntos
+  geom_point(size = 4, shape = 18) +
+  scale_color_manual(values = c("Hombre" = "skyblue", "Mujer" = "purple")) +
+  labs(title = "Ocupación del Poder Ejecutivo en estados Según el Sexo",
+       x = "Titular del Ejecutivo Local",
+       y = "Entidad Federativa",
+       color = "Sexo") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+  
+  
+ggplot(gubernaturas_1, aes(x = Año, y = Cantidad, color = Sexo)) +
+  geom_jitter(width = 0.3, height = 0, size = 4, shape = 18) +
+  scale_color_manual(values = c("Hombre" = "skyblue", "Mujer" = "purple")) +
+  labs(title = "Ocupación del Poder Ejecutivo en estados Según el Sexo",
+       x = "Titular del Ejecutivo Local",
+       y = "Entidad Federativa",
+       color = "Sexo") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+ggplot(gubernaturas_1, aes(x = Año, y = Cantidad)) +
+  geom_tile(aes(fill = Sexo), color = "white", width = 0.9, height = 0.9, alpha = 0.2) +
+  geom_point(aes(color = Sexo), size = 4, shape = 18) +
+  scale_fill_manual(values = c("Hombre" = "skyblue", "Mujer" = "purple")) +
+  scale_color_manual(values = c("Hombre" = "skyblue", "Mujer" = "purple")) +
+  labs(title = "Ocupación del Poder Ejecutivo en estados Según el Sexo",
+       x = "Titular del Ejecutivo Local",
+       y = "Entidad Federativa",
+       color = "Sexo",
+       fill = "Sexo") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+
+
+nodos <- unique(c(as.character(gubernaturas_1$Año), as.character(gubernaturas_1$Sexo)))
+nodos <- data.frame(name = nodos)
+
+# Paso 2: Mapear los años y los sexos a índices de nodos
+gubernaturas_1 <- gubernaturas_1 %>%
+  mutate(
+    source = match(as.character(Año), nodos$name) - 1,  # Índice del año como source
+    target = match(as.character(Sexo), nodos$name) - 1  # Índice del sexo como target
+  )
+
+fig <- plot_ly(
+  type = "sankey",
+  orientation = "h",
+  node = list(
+    label = nodos$name,
+    color = ifelse(nodos$name %in% c("Hombre", "Mujer"), c("skyblue", "purple"), "gray"),
+    pad = 15,                 # Espacio entre los nodos
+    thickness = 20,           # Grosor de los nodos
+    line = list(color = "black", width = 0.5)  # Bordes de los nodos
+  ),
+  link = list(
+    source = gubernaturas_1$source,
+    target = gubernaturas_1$target,
+    value = gubernaturas_1$Cantidad,
+    color = 'rgba(100, 100, 100, 0.2)'  # Color translúcido para las conexiones
+  )
+)
+
+# Personalización adicional
+fig <- fig %>%
+  layout(
+    title = list(text = "Evolución de las Gubernaturas por Sexo a lo largo de los años",
+                 font = list(size = 18, color = "#333333")),
+    font = list(size = 12, color = "black"),
+    margin = list(l = 100, r = 100, t = 80, b = 50)
+  )
+
+fig
+
+
+
+
+
+
+
+# Instalar y cargar los paquetes necesarios
+# install.packages("highcharter")
+library(highcharter)
+library(dplyr)
+
+# Supongamos que tu tibble se llama `gubernaturas_2` y tiene las columnas "Año", "Sexo" y "Cantidad"
+
+# Paso 1: Preparar los datos renombrando las columnas a 'from', 'to' y 'weight'
+gubernaturas_links <- gubernaturas_2 %>%
+  rename(
+    from = Año,
+    to = Sexo,
+    weight = Cantidad
+  )
+
+
+
+hc <- highchart() %>%
+  hc_chart(type = "sankey") %>%
+  hc_title(text = "Evolución de las Gubernaturas por Sexo a lo largo de los Años") %>%
+  hc_subtitle(text = "Distribución de las gubernaturas en función del sexo a través de los años") %>%
+  hc_add_series(
+    name = "Cantidad de Gubernaturas",
+    data = list_parse(gubernaturas_links),
+    nodes = list(
+      list(id = "Hombre", color = "#1f77b4"),  # Color azul para "Hombre"
+      list(id = "Mujer", color = "#9467bd")     # Color violeta para "Mujer"
+    ),
+    colorByPoint = TRUE,  # Desactiva colores automáticos por punto
+    linkColor = "source"   # Los enlaces heredan el color del nodo de origen
+  ) %>%
+  hc_tooltip(
+    pointFormat = "<b>{point.from} ➔ {point.to}</b>: {point.weight}"
+  ) %>%
+  hc_plotOptions(
+    sankey = list(
+      nodeWidth = 20,
+      nodePadding = 10,
+      dataLabels = list(
+        enabled = TRUE,
+        color = "#333333",
+        style = list(fontSize = "12px", fontWeight = "bold")
+      )
+    )
+  ) %>%
+  hc_legend(enabled = FALSE) %>%
+  hc_exporting(enabled = TRUE) %>%
+  hc_caption(
+    text = "Elaboración Propia con Datos del INEGI e INE",
+    style = list(fontSize = "10px", color = "#666666")
+  )
+
+# Mostrar el gráfico
+hc
+
+
+
+Porcentaje <- congresos_locales %>%
+  distinct(Año, ID_ESTADO, NOMBRE_ESTADO, PARTICIPACION) %>%    # Filtrar combinaciones únicas de Año e ID_ESTADO
+  group_by(Año)
+
+Porcentaje <- Porcentaje %>%
+  mutate(ID_ESTADO = str_pad(ID_ESTADO, width = 2, pad = "0"))
+
+
+
+gubernaturas <- read_csv("C:/Users/Eduardo/Documents/PC/ListaEjec.csv")
+
+
+gubernaturas_1 <- gubernaturas %>%
+  group_by(Año, Sexo) %>%
+  reframe(Cantidad = n())
+
+
+
+
+Porcentaje_1 <- congresos_locales %>%
+  group_by(ID_ESTADO) %>%
+  summarise(promedio_participacion = mean(PARTICIPACION, na.rm = TRUE)) %>%
+  ungroup()
+
+
+Porcentaje_1 <- congresos_locales %>%
+  group_by(ID_ESTADO, Z) %>%
+  summarise(promedio_participacion = mean(PARTICIPACION, na.rm = TRUE)) %>%
+  ungroup()
+
+
+zonas <- congresos_locales %>%
+  distinct(Año,NOMBRE_ESTADO, ID_ESTADO, Zona, PARTICIPACION) %>%    # Filtrar combinaciones únicas de Año e ID_ESTADO
+  group_by(Año)
+
+
+zonas %>%
+  group_by(Año) %>%
+  reframe(
+    Mejor_ID_ESTADO = ID_ESTADO[which.max(PARTICIPACION)],
+    Mejor_Participacion = max(PARTICIPACION),
+    Peor_ID_ESTADO = ID_ESTADO[which.min(PARTICIPACION)],
+    Peor_Participacion = min(PARTICIPACION),
+  )
+
+
+
+write_xlsx(Porcentaje_1, "Porcentaje_1.xlsx")
+
+
+zonas1 <- zonas %>%
+  group_by(Año, Zona) %>%
+  reframe(mean(PARTICIPACION))%>%
+  rename(PARTICIPACION = `mean(PARTICIPACION)`)
+
+
+ggplot(zonas1, aes(x = Año, y = PARTICIPACION, group = Zona, color = Zona)) +
+  geom_line(color="black", linewidth=0.6) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c("Norte" = "#D2B48C", "Sur" = "#228B22", "Occidente" = "#1E90FF", "Península de Yucatán y Golfo" = "#40E0D0", "Centro" ="#696969" )) +
+  labs(title = "Relación entre la Participación Ciudadana y los Procesos Electorales",
+       subtitle = "Según la Lista Nominal de Electores 2015-2023",
+       x = "Proceso Electoral",
+       y = "Tasa de Participación",
+       color = NULL) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2015, 2023, by=1))+
+  scale_y_continuous(breaks = seq(0.1, 0.8, by=0.1))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+ggplot(zonas1, aes(x = Año, y = PARTICIPACION, group = Zona, color = Zona)) +
+  geom_line(color="black", linewidth=0.6) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0.539388, linetype = "dashed", color = "red", size=0.7) +
+  annotate("text", x = 2016, y = 0.52, label = "0.53", color = "red", size = 3, hjust = -5) +
+  scale_color_manual(values = c("Norte" = "#D2B48C", "Sur" = "#228B22", "Occidente" = "#1E90FF", "Península de Yucatán y Golfo" = "#40E0D0", "Centro" = "#696969")) +
+  labs(title = "Relación entre la Participación Ciudadana y los Procesos Electorales",
+       subtitle = "Según la Lista Nominal de Electores 2015-2023",
+       x = "Proceso Electoral",
+       y = "Tasa de Participación",
+       caption = "Elaboración Propia con Datos del INE",
+       color = NULL) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2015, 2023, by = 1)) +
+  scale_y_continuous(breaks = seq(0.1, 0.8, by = 0.1)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+
+###
+Independientes <- read_excel("C:/Users/Eduardo/Documents/PC/NUMCANDIND.xlsx")
+Independientes_lis <- read_excel("C:/Users/Eduardo/Documents/PC/CANDINDLIST.xlsx")
+
+
+
+ggplot(data = Independientes) +
+  geom_bar(mapping = aes(x = Año, y = Cantidad, fill = Categoria), 
+           stat = "identity", position = "fill")+
+  labs(
+    x = "Proceso Electoral", 
+    y = "Porcentaje de las Candidaturas",
+    color = "Sección",
+    title = "Participación de las Candidaturas Independientes en México",
+    subtitle = "Según el Proceso Electoral 2015-2024",
+    caption = "Elaboración propia con datos del INE"
+  ) +
+  scale_x_continuous(breaks = seq(2015, 2024, by=1))+
+  scale_fill_manual(values = c("Candidaturas" = "#c0392b", "Electas" = "#16a085")) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+Independientes_POR <- Independientes_lis %>%
+  group_by(Entidad) %>%
+  count(Casos=n())%>%
+reframe(Porcentaje = (n/Casos)*100)
+
+
+### INTERVALOS ### 
+
+
+
+## ENSU 2018:
+
+EN20181 <- read.dbf("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2018/ENSU_CB_0318.dbf")
+EN20182 <- read.dbf("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2018/ENSU_CB_0618.dbf")
+EN20183 <- read.dbf("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2018/ENSU_CB_0918.dbf")
+EN20184 <- read.dbf("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2018/ENSU_CB_1218.dbf")
+
+EN20181$N_ENT <- as.character(EN20181$N_ENT)
+EN20182$N_ENT <- as.character(EN20182$N_ENT)
+EN20183$N_ENT <- as.character(EN20183$N_ENT)
+EN20184$N_ENT <- as.character(EN20184$N_ENT)
+
+ENSU2018 <- bind_rows(EN20181, EN20182, EN20183, EN20184)
+
+ENSU2018 <- ENSU2018 %>%
+  select(NOM_ENT:BP1_1)
+
+
+### ENSU 2021:
+EN20211 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2021/ENSU_CB_0621.csv")
+EN20212 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2021/ENSU_CB_0921.csv")
+EN20213 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2021/ENSU_CB_1221.csv")
+
+ENSU2021 <- bind_rows(EN20211, EN20212, EN20213)
+
+ENSU2021 <-ENSU2021 %>%
+  select(NOM_ENT:BP1_1)
+
+
+### ENSU 2024:
+EN20241 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2024/ENSU_CB_0324.csv")
+EN20242 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2024/ENSU_CB_0624.csv")
+EN20243 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENSU/E2024/ENSU_CB_0924.csv")
+
+
+EN20241 <- EN20241 %>% mutate(across(everything(), as.character))
+EN20242 <- EN20242 %>% mutate(across(everything(), as.character))
+EN20243 <- EN20243 %>% mutate(across(everything(), as.character))
+
+ENSU2024 <- bind_rows(EN20241, EN20242, EN20243)
+
+ENSU2024 <- ENSU2024 %>%
+  select(NOM_ENT:BP1_1)
+
+
+
+
+### TRANSOFMRACION ENSU:
+
+  #2018:
+ENSU2018 <- ENSU2018 %>% 
+  mutate(BP1_1 = case_when(
+    BP1_1== 1 ~ "Seguro",
+    BP1_1== 2 ~ "Inseguro",
+    BP1_1== 99 ~ "No sabe")) %>% 
+  rename(Percepcion = BP1_1)
+
+ENSU2018 <- ENSU2018 %>% 
+  mutate(ciudad_sugura = case_when(
+    Percepcion== "Inseguro" ~ 1,
+    Percepcion!="Inseguro" ~ 0)) 
+
+ENSU2018 <- ENSU2018 %>% filter(!is.na(ciudad_sugura))
+
+
+exito <- sum(ENSU2018$ciudad_sugura)
+n <- length(ENSU2018$ciudad_sugura)
+
+
+add4ci(exito, n,conf.level = 0.90)
+add4ci(exito, n,conf.level = 0.95)
+add4ci(exito, n,conf.level = 0.99)
+
+
+  #2021:
+ENSU2021 <- ENSU2021 %>% 
+  mutate(BP1_1 = case_when(
+    BP1_1== 1 ~ "Seguro",
+    BP1_1== 2 ~ "Inseguro",
+    BP1_1== 99 ~ "No sabe")) %>% 
+  rename(Percepcion = BP1_1)
+
+
+ENSU2021 <- ENSU2021 %>% 
+  mutate(ciudad_sugura = case_when(
+    Percepcion== "Inseguro" ~ 1,
+    Percepcion!="Inseguro" ~ 0)) 
+
+ENSU2021 <- ENSU2021 %>% filter(!is.na(ciudad_sugura))
+
+
+exito1 <- sum(ENSU2021$ciudad_sugura)
+n1 <- length(ENSU2021$ciudad_sugura)
+
+
+add4ci(exito1, n1,conf.level = 0.90)
+add4ci(exito1, n1,conf.level = 0.95)
+add4ci(exito1, n1,conf.level = 0.99)
+
+
+  #2024:
+ENSU2024 <- ENSU2024 %>% 
+  mutate(BP1_1 = case_when(
+    BP1_1== 1 ~ "Seguro",
+    BP1_1== 2 ~ "Inseguro",
+    BP1_1== 99 ~ "No sabe")) %>% 
+  rename(Percepcion = BP1_1)
+
+
+ENSU2024 <- ENSU2024 %>% 
+  mutate(ciudad_sugura = case_when(
+    Percepcion== "Inseguro" ~ 1,
+    Percepcion!="Inseguro" ~ 0)) 
+
+ENSU2024 <- ENSU2024 %>% filter(!is.na(ciudad_sugura))
+
+
+exito2 <- sum(ENSU2024$ciudad_sugura)
+n2 <- length(ENSU2024$ciudad_sugura)
+
+
+add4ci(exito2, n2,conf.level = 0.90)
+add4ci(exito2, n2,conf.level = 0.95)
+add4ci(exito2, n2,conf.level = 0.99)
+
+
+interv <- tibble(
+  Año = c(2018, 2021, 2024),
+  Estimado = c(0.7161184, 0.6221208, 0.570823),
+  IC_Lower = c(0.7117506, 0.6173657, 0.5660698),
+  IC_Upper = c(0.7204862, 0.6268758, 0.5755761)
+)
+
+ggplot(interv, aes(x = factor(Año), y = Estimado)) +
+  geom_point(size = 4, color = "#2E86C1") +  # Punto de la estimación
+  geom_errorbar(aes(ymin = IC_Lower, ymax = IC_Upper), width = 0.2, color = "#117A65") +  # Intervalo de confianza
+  labs(
+    title = "Estimaciones Anuales con Intervalos de Confianza al 99%",
+    x = "Año",
+    y = "Estimación"
+  ) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+ggplot(interv, aes(x = factor(Año), y = Estimado)) +
+  geom_point(size = 4, color = "#2E86C1") +  # Punto de la estimación
+  geom_errorbar(aes(ymin = IC_Lower, ymax = IC_Upper), width = 0.4, size=1, color = "#117") +  # Intervalo de confianza
+  geom_smooth(aes(group = 1), method = "loess", color = "#2980B9", se = FALSE, linetype = "solid") +  # Línea suavizada
+  labs(
+    title = "Estimaciones Sobre la Inseguridad de la Población en México",
+    subtitle="Intervalos de Confianza al 99%, Según la ENSU 2018-2024",
+    x = "Proceso Electoral",
+    y = "Intervalo de Confianza",
+    caption = "Elaboración Propia con Datos del INEGI"
+  ) +
+  theme_minimal() +
+  scale_y_continuous(breaks = seq(0.55, 0.75, by=0.05))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+crime <-  read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/MCrime/mexico_crime.csv")
+
+crime_summarized <- crime %>%
+  group_by(year) %>%
+  summarise(total_crimes = sum(count))
+
+# Graficar
+ggplot(crime_summarized, aes(x = year, y = total_crimes)) +
+  geom_line(color="red3", linewidth=1.2, linetype="dashed") +
+  geom_area(aes(y = total_crimes, fill = "year"), alpha = 0.4, show.legend = FALSE) + 
+  geom_point(aes(size=total_crimes))+
+  labs(x = "Año", y = "Crímenes", title = "Relación Entre el Número de Crímenes y los Años en México",
+       subtitle = "2015-2023", caption = "Elaboración Propia con Datos del Gobierno de México", size=NULL) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2015, 2023, by=1))+
+  scale_y_continuous(breaks = seq(0, 2000000, by=250000))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+    
+  )
+
+crime_summarized <- crime %>%
+  filter(entity_code %in% c(1, 6, 8, 13, 14, 16, 17, 19, 20, 21, 22, 24, 26, 27, 28, 29, 30))
+
+
+top_crimes <- crime_summarized %>%
+  group_by(type_of_crime) %>%
+  summarise(total_incidence = sum(count, na.rm = TRUE)) %>%
+  arrange(desc(total_incidence)) %>%
+  slice_head(n = 10)
+
+top_crimes <- top_crimes %>% 
+  mutate(type_of_crime = case_when(
+    type_of_crime== "Robbery" ~ "Robo",
+    type_of_crime== "Domestic violence" ~ "Violencia Doméstica",
+    type_of_crime== "Injuries" ~ "Lesiones",
+    type_of_crime== "Property damage" ~ "Daño a la Propiedad",
+    type_of_crime== "Other common law crimes" ~ "Otros",
+    type_of_crime== "Threats" ~ "Amenazas",
+    type_of_crime== "Fraud" ~ "Fraude",
+    type_of_crime== "Drug trafficking (small-scale)" ~ "Narcomenudeo",
+    type_of_crime== "Homicide" ~ "Homicidio",
+    type_of_crime== "Dispossession" ~ "Despojo"))
+
+
+crime_severity <- c(
+  "Amenazas" = 2, 
+  "Daño a la Propiedad" = 4, 
+  "Despojo" = 5, 
+  "Fraude" = 3, 
+  "Homicidio" = 10, 
+  "Lesiones" = 7, 
+  "Narcomenudeo" = 6, 
+  "Otros" = 1, 
+  "Robo" = 8, 
+  "Violencia Doméstica" = 9
+)
+
+top_crimes <- top_crimes %>%
+  mutate(severity = crime_severity[type_of_crime])
+
+
+
+
+ggplot(data = top_crimes) +
+  geom_bar(mapping = aes(x = type_of_crime, y = total_incidence, fill = severity), 
+           stat = "identity", position="dodge")+
+  coord_flip() +
+  scale_fill_continuous(
+    name = "Gravedad",
+    low = "yellow", 
+    high = "red", 
+    guide = "colorbar")+
+  labs(
+    x = "Crímenes", 
+    y = "Cantidad Total",
+    title = "Crímenes de Mayor Concurrencia en México",
+    subtitle = "Donde Fueron Electas Candidaturas Independientes, 2015-2023",
+    caption = "Elaboración propia con datos del Gobierno de México"
+  ) +
+  theme_minimal()+
+  scale_y_continuous(breaks = seq(0, 2500000, by=500000))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+cargos_tot <- Cargo_1 %>%
+group_by(Año, Sexo)%>%
+  reframe(Cargos=sum(Casos))
+
+ggplot(cargos_tot, aes(x = Año, y = Cargos)) +
+  geom_line(color = "#000001", linewidth = 1.2, linetype = "dotted") +
+  geom_point(size = 3) +
+  geom_col(fill = "lightblue", width = 0.6, alpha = 0.8)+
+  geom_area(alpha = 0.2, fill = "#06c5b7")+
+  geom_boxplot(aes(group = Año), fill = "lightblue", alpha = 0.7)+
+  geom_smooth(se = FALSE) +  # Elimina la parte gris
+  labs(x = "Proceso Electoral", y = "Cargos", title = "Relación Entre el Número Puestos de Elección Popular y los Años",
+       subtitle = "Según el Proceso Electoral, 2018-2023", caption = "Elaboración Propia con Datos del INE", size = NULL) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2018, 2023, by = 1)) +
+  scale_y_continuous(breaks = seq(-5000, 25000, by=5000))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  )
+
+#### INTEGRANTES, EDADES, ESTUDIOS, INGRESOS Y OTROS DATOS (SALARIO MÍNIMO):
+
+resultado <- edades_RGS_2016 %>%
+  bind_rows(edades_RGS_2017) %>%
+  bind_rows(edades_RGS_2018) %>%
+  bind_rows(edades_RGS_2019) %>%
+  bind_rows(edades_RGS_2020)
+
+resultado <- resultado %>%
+  select(-Edad_estimada)
+
+edades_RGS_2016 <- edades_RGS_2016 %>%
+  mutate(Año = 2015)
+
+edades_RGS_2017 <- edades_RGS_2017 %>%
+  mutate(Año = 2016)
+
+edades_RGS_2018 <- edades_RGS_2018 %>%
+  mutate(Año = 2017)
+
+edades_RGS_2019 <- edades_RGS_2019 %>%
+  mutate(Año = 2018)
+
+edades_RGS_2020 <- edades_RGS_2020 %>%
+  mutate(Año = 2019)
+
+###
+edades_2016_GPENT <- edades_2016_GPENT %>%
+  mutate(Año = 2015)
+
+edades_2017_GPENT <- edades_2017_GPENT %>%
+  mutate(Año = 2016)
+
+edades_2018_GPENT <- edades_2018_GPENT %>%
+  mutate(Año = 2017)
+
+
+resultado_2 <- edades_2016_GPENT %>%
+  bind_rows(edades_2017_GPENT) %>%
+  bind_rows(edades_2018_GPENT)
+
+
+
+###
+edades_RG_2016 <- edades_RG_2016 %>%
+  mutate(Año = 2015)
+
+edades_RG_2017 <- edades_RG_2017 %>%
+  mutate(Año = 2016)
+
+edades_RG_2018 <- edades_RG_2018 %>%
+  mutate(Año = 2017)
+
+edades_2019_ENT <- edades_2019_ENT %>%
+  mutate(Año = 2018)
+
+edades_2019_ENT <- edades_2019_ENT %>%
+  rename(Edad_estimada = edades)
+
+edades_2020_ENT <- edades_2020_ENT %>%
+  mutate(Año = 2019)
+
+edades_2020_ENT <- edades_2020_ENT %>%
+  rename(Edad_estimada = edades)
+
+edades_RG_2016 <- edades_RG_2016 %>% mutate(Edad_estimada = as.numeric(Edad_estimada))
+edades_RG_2017 <- edades_RG_2017 %>% mutate(Edad_estimada = as.numeric(Edad_estimada))
+edades_RG_2018 <- edades_RG_2018 %>% mutate(Edad_estimada = as.numeric(Edad_estimada))
+edades_2019_ENT <- edades_2019_ENT %>% mutate(Edad_estimada = as.numeric(Edad_estimada))
+edades_2020_ENT <- edades_2020_ENT %>% mutate(Edad_estimada = as.numeric(Edad_estimada))
+
+
+
+
+resultado_3 <- edades_RG_2016 %>%
+  bind_rows(edades_RG_2017) %>%
+  bind_rows(edades_RG_2018) %>%
+  bind_rows(edades_2019_ENT) %>%
+  bind_rows(edades_2020_ENT)
+
+resultado_3 <- resultado_3 %>%
+  select(-Entidad, -nombre1, -Sexo, -Origen, -Discapacidad, -Casos)
+
+resultado_3 <- resultado_3 %>%
+  select(-Casos)
+
+
+ggplot(data = resultado, aes(x = Año, y = Casos)) +
+  geom_smooth()+
+  geom_bar(mapping = aes(fill = Rango_Edad), 
+           stat = "identity", position = "dodge") +
+  labs(
+    x = "Proceso Electoral", 
+    y = "Cantidad",
+    fill = "Rango de Edad", # Cambiado de "color" a "fill" para ser coherente con la estética
+    title = "Edad de las Personas Legisladoras en México",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2015-2019",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_x_continuous(breaks = seq(2015, 2024, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 150, by=25))+
+  scale_fill_manual(
+    values = c(
+      "18 a 24" = "#c0392b",
+      "25 a 29" = "#16a085",
+      "30 a 34" = "#2980b9",
+      "35 a 39" = "#8e44ad",
+      "40 a 44" = "#e67e22",
+      "45 a 49" = "#f1c40f",
+      "50 a 54" = "#34495e",
+      "55 a 59" = "#2ecc71",
+      "60 o más" = "#d35400",
+      "No especifica" = "gray"
+      
+    )
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+resultado <- resultado %>%
+  select(Rango_Edad, Casos)%>%
+  reframe(Casos=sum(Casos))%>%
+  arrange(desc(Casos))
+
+resultado %>%
+  select(Rango_Edad, Casos) %>%
+  group_by(Rango_Edad) %>% # Agrupa por Rango_Edad
+  reframe(Casos = sum(Casos), Prop=(Casos/sum(Casos)*100)) %>% # Suma los casos dentro de cada grupo
+  arrange(desc(Casos))
+
+
+resultado %>%
+  group_by(Rango_Edad) %>% 
+  summarise(
+    Casos = sum(Casos),
+  ) %>%
+  arrange(desc(Casos))
+
+
+total_casos <- sum(resultado$Casos)
+
+resultado %>%
+  group_by(Rango_Edad) %>%
+  summarise(
+    Casos = sum(Casos),
+    Proporcion = (sum(Casos) / total_casos) * 100  # Usar total_casos calculado previamente
+  ) %>%
+  arrange(desc(Casos))
+
+resultado_sex  <- resultado %>%
+  group_by(Rango_Edad, Sexo) %>%
+  summarise(
+    Casos = sum(Casos),
+    Proporcion = (sum(Casos) / total_casos) * 100  # Usar total_casos calculado previamente
+  ) %>%
+  arrange(desc(Casos))
+
+
+ggplot(resultado_sex, aes(x = Rango_Edad, y = Casos)) +
+  geom_density(alpha = 0.5)+
+  labs(x = "Proceso Electoral", y = "Cargos", title = "Relación Entre el Número Puestos de Elección Popular y los Años",
+       subtitle = "Según el Proceso Electoral, 2018-2023", caption = "Elaboración Propia con Datos del INE", size = NULL) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2018, 2023, by = 1)) +
+  scale_y_continuous(breaks = seq(-5000, 25000, by=5000))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  )
+
+
+ggplot(resultado_sex, aes(x = Rango_Edad, y = Casos, color=Sexo)) +
+  geom_point(size=3) +
+  geom_jitter(size=2)+
+  labs(
+    x = "Rango de Edad", 
+    y = "Número de Casos", 
+    title = "Edad de las Personas Legisladoras en México",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2015-2019",
+    caption = "Elaboración Propia con Datos del INEGI",
+    color=NULL
+  ) +
+  scale_color_manual(values = c("Hombres" = "skyblue", "Mujeres" = "purple")) +
+  theme_minimal() +
+  scale_y_continuous(breaks = seq(0, 500, by = 100)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom")
+
+
+resultado_sex <- resultado_sex %>% 
+  mutate(Sexo = case_when(
+    Sexo== "Hombre" ~ "Hombres",
+    Sexo== "Mujer" ~ "Mujeres",
+    Sexo== "Hombres" ~ "Hombres",
+    Sexo== "Mujeres" ~ "Mujeres"))
+
+
+resultado_sex %>%
+  group_by(Rango_Edad, Sexo) %>%
+  summarise(
+    Casos = sum(Casos),
+    Proporcion = (sum(Casos) / total_casos) * 100 
+  ) %>%
+  arrange(desc(Casos))
+
+
+
+resultado_2_GP <- resultado_2%>%
+  group_by(Rango_Edad, Partido) %>%
+  summarise(
+    Casos = sum(Casos),
+    Proporcion = (sum(Casos) / total_casos) * 100  # Usar total_casos calculado previamente
+  ) %>%
+  arrange(desc(Casos))
+
+
+
+
+ggplot(data = resultado_2_GP) +
+  geom_bar(mapping = aes(x = Rango_Edad, y = Casos, fill = Partido), 
+           stat = "identity", position="fill", alpha=0.85)+
+  coord_flip() +
+  labs(
+    x = "Rango de Edad", 
+    y = "Porcentaje",
+    title = "Edad de las Personas Legisladoras en México",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral, 2015-2019",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  ))+
+  theme_minimal()+
+  scale_y_continuous(breaks = seq(0, 2500000, by=500000))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+resultado_3 <- resultado_3%>%
+  filter(Edad_estimada != 0)
+
+
+ggplot(data = resultado_3) +
+  geom_boxplot(mapping = aes(x = factor(Año), y = Edad_estimada, fill=factor(Año)))+
+  coord_flip()+
+  labs(
+    x = "Proceso Electoral", 
+    y = "Rango de Edad",
+    title = "Edad de las Personas Legisladoras en México",
+    subtitle = "Distribución en los Congresos Locales Según el Proceso Electoral, 2015-2019",
+    caption = "Elaboración propia con datos del INEGI",
+    fill="Año"
+  ) +
+  scale_fill_manual(values = c(
+    "2015" = "#1B4F72",  # Azul oscuro
+    "2016" = "#117A65",  # Verde oscuro
+    "2017" = "#884EA0",  # Morado formal
+    "2018" = "#A6ACAF",  # Gris elegante
+    "2019" = "#D35400"   # Naranja tenue
+  )) +
+  theme_minimal()+
+  scale_y_continuous(breaks = seq(22, 86, by=8))+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+ggplotly(
+  ggplot(data = resultado_3) +
+    geom_boxplot(mapping = aes(x = factor(Año), y = Edad_estimada, fill=factor(Año)))+
+    coord_flip()+
+    labs(
+      x = "Proceso Electoral", 
+      y = "Rango de Edad",
+      title = "Edad de las Personas Legisladoras en México",
+      subtitle = "Distribución en los Congresos Locales Según el Proceso Electoral, 2015-2019",
+      caption = "Elaboración propia con datos del INEGI",
+      fill="Año"
+    ) +
+    scale_fill_manual(values = c(
+      "2015" = "#1B4F72",  # Azul oscuro
+      "2016" = "#117A65",  # Verde oscuro
+      "2017" = "#884EA0",  # Morado formal
+      "2018" = "#A6ACAF",  # Gris elegante
+      "2019" = "#D35400"   # Naranja tenue
+    )) +
+    theme_minimal()+
+    scale_y_continuous(breaks = seq(22, 86, by=8))+
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+      plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+      plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+      axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+      axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+      axis.text = element_text(color = "#34495E"),
+      panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+      panel.grid.minor = element_blank()
+    )
+)
+
+
+
+## Estudios:
+
+estudios_2016_RE <- estudios_2016_RE %>%
+  mutate(Año = 2015)
+
+estudios_2017_RE <- estudios_2017_RE %>%
+  mutate(Año = 2016)
+
+estudios_2018_RE <- estudios_2018_RE %>%
+  mutate(Año = 2017)
+
+estudios_2019_RE <- estudios_2019_RE %>%
+  mutate(Año = 2018)
+
+estudios_2020_RE <- estudios_2020_RE %>%
+  mutate(Año = 2019)
+
+estudios_2021_RE <- estudios_2021_RE %>%
+  mutate(Año = 2020)
+
+est_resul_1  <- estudios_2016_RE %>%
+  bind_rows(estudios_2017_RE) %>%
+  bind_rows(estudios_2018_RE) %>%
+  bind_rows(estudios_2019_RE) %>%
+  bind_rows(estudios_2020_RE)
+  
+  estudios_2016_SRE <- estudios_2016_SRE %>%
+    mutate(Año = 2015)
+  
+  estudios_2017_SRE <- estudios_2017_SRE %>%
+    mutate(Año = 2016)
+  
+  estudios_2018_SRE <- estudios_2018_SRE %>%
+    mutate(Año = 2017)
+  
+  estudios_2019_SRE <- estudios_2019_SRE %>%
+    mutate(Año = 2018)
+  
+  estudios_2020_SRE <- estudios_2020_SRE %>%
+    mutate(Año = 2019)
+  
+  estudios_2021_SRE <- estudios_2021_SRE %>%
+    mutate(Año = 2020)
+  
+  
+  
+  est_resul_2  <- estudios_2016_SRE %>%
+    bind_rows(estudios_2017_SRE) %>%
+    bind_rows(estudios_2018_SRE) %>%
+    bind_rows(estudios_2019_SRE) %>%
+    bind_rows(estudios_2020_SRE)
+  bind_rows(estudios_2021_SRE)
+  
+  
+  
+  estudios_2016_PRE <- estudios_2016_PRE %>%
+    mutate(Año = 2015)
+  
+  estudios_2017_PRE <- estudios_2017_PRE %>%
+    mutate(Año = 2016)
+  
+  estudios_2018_PRE <- estudios_2018_PRE %>%
+    mutate(Año = 2017)
+  
+  estudios_2019_PRE <- estudios_2019_PRE %>%
+    mutate(Año = 2018)
+  
+  
+  
+  est_resul_3  <- estudios_2016_PRE %>%
+    bind_rows(estudios_2017_PRE) %>%
+    bind_rows(estudios_2018_PRE) %>%
+    bind_rows(estudios_2019_PRE) 
+
+  
+  
+  ggplot(data = est_resul_1, aes(x = Año, y = Casos, fill=Rango_Estudios)) +
+    geom_bar(stat = "identity", position="fill", alpha=0.85)+
+    coord_flip()+
+    labs(
+      x = "Proceso Electoral", 
+      y = "Cantidad",
+      fill = "Estudios", # Cambiado de "color" a "fill" para ser coherente con la estética
+      title = "Nivel Académico de las Personas Legisladoras en México",
+      subtitle = "Según el Proceso Electoral 2015-2019",
+      caption = "Elaboración propia con datos del INEGI"
+    ) +
+    scale_x_continuous(breaks = seq(2015, 2020, by=1))+
+    scale_fill_manual(
+      values = c(
+        "Carrera técnica o carrera comercial" = "#4BA3C3",  # Azul medio
+        "Doctorado" = "#6A1B9A",  # Morado oscuro
+        "Educación Técnica" = "#4BA3C3",  # Azul medio
+        "Información no disponible" = "#B0BEC5",  # Gris claro
+        "Licenciatura" = "#8E24AA",  # Morado
+        "Maestría" = "#512DA8",  # Morado profundo
+        "Ninguno" = "#CFD8DC",  # Gris claro
+        "No especificado" = "#B0BEC5",  # Gris claro
+        "No Estudió" = "#CFD8DC",  # Gris claro
+        "No se sabe" = "#ECEFF1",  # Gris muy claro
+        "Preescolar o primaria" = "#81C784",  # Verde claro
+        "Preescolar y Primaria" = "#66BB6A",  # Verde intermedio
+        "Preparatoria" = "#4CAF50",  # Verde oscuro
+        "Primaria" = "#81C784",  # Verde claro
+        "Secundaria" = "#388E3C"  # Verde más oscuro
+      )
+    )+
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+      plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+      plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+      axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.text = element_text(color = "#34495E"),
+      panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+      panel.grid.minor = element_blank()    )
+  
+  
+  total_casos_1 <- sum(est_resul_1$Casos)
+  
+  resultado_2_GP <- est_resul_1%>%
+    group_by(Rango_Estudios) %>%
+    summarise(
+      Casos = sum(Casos),
+      Proporcion = (sum(Casos) /total_casos_1) * 100 
+    ) %>%
+    arrange(desc(Casos))
+  
+  
+  est_resul_2_sex <- est_resul_2 %>%
+    group_by(Año, Sexo, Rango_Estudios) %>%
+    summarise(Total_Casos = sum(Casos), .groups = "drop") %>%
+    group_by(Año, Sexo) %>%
+    summarise(
+      Max_Casos = max(Total_Casos), 
+      Rango_Max_Casos = Rango_Estudios[which.max(Total_Casos)],
+      Min_Casos = min(Total_Casos),
+      Rango_Min_Casos = Rango_Estudios[which.min(Total_Casos)],
+      .groups = "drop"
+    ) 
+
+
+
+####
+
+Universidad_1 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENOE/ESTUDIOS/SDEMT123.csv") 
+Universidad_2 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENOE/ESTUDIOS/SDEMT223.csv") 
+Universidad_3 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENOE/ESTUDIOS/SDEMT323.csv")
+Universidad_4 <- read_csv("C:/Users/Eduardo/Documents/PC/SECCION1/Intervalos/ENOE/ESTUDIOS/SDEMT423.csv") 
+
+
+Universidad <- bind_rows(Universidad_1, Universidad_2, Universidad_3, Universidad_4)
+
+
+Universidad <- Universidad %>%
+  select(ent:cs_p13_1)
+
+Universidad <- Universidad %>%
+  rename(Educacion= cs_p13_1)
+
+
+Universidad <- Universidad %>% 
+  mutate(Educacion = case_when(
+    Educacion== 0 ~ "Ninguno",
+    Educacion== 1 ~ "Preescolar",
+    Educacion== 2 ~ "Primaria",
+    Educacion== 3 ~ "Secundaria",
+    Educacion== 4 ~ "Preparatoria",
+    Educacion== 5 ~ "Normal",
+    Educacion== 6 ~ "Carrera Técnica",
+    Educacion== 7 ~ "Profesional",
+    Educacion== 8 ~ "Maestría",
+    Educacion== 9 ~ "Doctorado",
+    Educacion== 99 ~ "No Sabe Nivel"))
+
+
+Universidad <- Universidad %>% 
+  mutate(Lic_niv = case_when(
+    Educacion== "Profesional" ~ 1,
+    Educacion!="Profesional" ~ 0))
+
+Universidad <- Universidad %>% 
+  mutate(Lic_niv_1 = case_when(
+    Educacion == "Profesional" & sex == 1 ~ 1,
+    TRUE ~ 0))
+
+
+
+exito_1 <- sum(Universidad$Lic_niv)
+n_1 <- length(Universidad$Lic_niv)
+
+exito_1_1 <- sum(Universidad$Lic_niv_1)
+n_1_1 <- length(Universidad$Lic_niv_1)
+
+
+add4ci(exito_1, n_1,conf.level = 0.90)
+add4ci(exito_1, n_1,conf.level = 0.95)
+add4ci(exito_1, n_1,conf.level = 0.99)
+
+add4ci(exito_1_1, n_1_1,conf.level = 0.90)
+add4ci(exito_1_1, n_1_1,conf.level = 0.95)
+add4ci(exito_1_1, n_1_1,conf.level = 0.99)
+
+
+## graf
+
+p_hat <- 0.1765188  # Proporción estimada
+lower_ci <- 0.1757430  # Límite inferior del IC
+upper_ci <- 0.1772946  # Límite superior del IC
+
+n_values <- c(10, 1000)  # Tamaños muestrales
+t <- seq(-6, 6, length.out = 200)  # Valores de 't'
+logistic <- function(t) 1 / (1 + exp(-t))  # Función logística
+
+data <- data.frame()
+for (n in n_values) {
+  p <- logistic(t)
+  se <- sqrt((p_hat * (1 - p_hat)) / n)  # Error estándar
+  lower <- p - 1.96 * se
+  upper <- p + 1.96 * se
+  data <- rbind(data, data.frame(t = t, p = p, lower = lower, upper = upper, n = as.factor(n)))
+}
+
+
+### graf
+
+# Script de visualización profesional para una tesis en Ciencia Política
+
+library(ggplot2)
+
+ggplot(data, aes(x = t, y = p, color = as.factor(n))) +
+  geom_line(size = 1.2) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = as.factor(n)), alpha = 0.2, color = NA) +
+  labs(
+    title = "Curva Logística con Intervalos de Confianza (Agresti-Coull)",
+    subtitle = "Estimación de la proporción de personas con licenciatura en México 2023",
+    x = "Puntaje (t)",  # Cambia a un nombre más interpretativo si corresponde
+    y = "Proporción (p)",  # Igual, si p representa algo específico, puedes cambiarlo
+    color = NULL,
+    fill = NULL,
+    caption = "Fuente: Elaboración propia con base en datos del INEGI"
+  ) +
+  scale_color_manual(values = c("10" = "#1B4F72", "100" = "#2874A6", "1000" = "#85C1E9")) +
+  scale_fill_manual(values = c("10" = "#1B4F72", "100" = "#2874A6", "1000" = "#85C1E9")) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  annotate("text", x = 3.5, y = 1.05, label = "Zona de confianza total", size = 3.5, color = "gray30", hjust = 0) +
+  annotate("text", x = -4, y = 0.12, label = "Zona de mayor incertidumbre", size = 3.5, color = "gray30", hjust = 0) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+est_resul_3_gp <- est_resul_3 %>%
+  group_by(Año, Partido, Rango_Estudios) %>%
+  summarise(Total_Casos = sum(Casos), .groups = "drop") %>%
+  group_by(Año, Partido) %>%
+  summarise(
+    Max_Casos = max(Total_Casos), 
+    Rango_Max_Casos = Rango_Estudios[which.max(Total_Casos)],
+    Min_Casos = min(Total_Casos),
+    Rango_Min_Casos = Rango_Estudios[which.min(Total_Casos)],
+    .groups = "drop"
+  ) 
+
+
+
+ggplot(est_resul_3_gp, aes(x = Rango_Min_Casos, y = Min_Casos, color=Partido)) +
+  geom_point(size=3) +
+  geom_jitter(size=2)+
+  coord_flip()+
+  labs(
+    x = "Rango de Edad", 
+    y = "Número de Estudios", 
+    title = "Licenciatura de las Personas Legisladoras en México",
+    subtitle = "Según el Proceso Electoral 2023",
+    caption = "Elaboración Propia con Datos del INEGI",
+    color=NULL
+  ) +
+  scale_color_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  ))+
+  scale_y_continuous(breaks = seq(1, 5, by = 1)) +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank())
+
+
+
+
+
+ggplot(data = div_sex, 
+       aes(x = fct_reorder(Carrera, Total_Casos), y = Total_Casos)) +
+  geom_smooth() +
+  geom_bar(mapping = aes(fill = Sexo), 
+           stat = "identity", position = "dodge") +
+  coord_flip() +
+  labs(
+    x = "Carrera", 
+    y = "Cantidad",
+    fill = "Sexo", # Cambiado para mayor claridad
+    title = "Licenciatura de las Personas Legisladoras en México",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2023",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_y_continuous(breaks = seq(150, 1750, by = 250)) +
+  scale_fill_manual(
+    values = c(
+      "Hombre" = "skyblue", 
+      "Mujer" = "violet"
+    )
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+div_sex <- estudios_2023_SREL %>%
+  group_by(Sexo, Carrera) %>%
+  summarise(Total_Casos = sum(Casos, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(Total_Casos)) %>%
+  slice_head(n = 9)
+
+
+### Salarios:
+
+
+
+salario_rest_1  <- ingresos_2016_f %>%
+  bind_rows(ingresos_2017_f) %>%
+  bind_rows(ingresos_2018_f)
+
+ingresos_2016_f <- ingresos_2016_f %>%
+  mutate(Año = 2015)
+
+ingresos_2017_f <- ingresos_2017_f %>%
+  mutate(Año = 2016)
+
+ingresos_2018_f <- ingresos_2018_f %>%
+  mutate(Año = 2017)
+
+
+
+
+
+
+
+salario_rest_2 <- ent_2016 %>%
+  bind_rows(ent_2017) %>%
+  bind_rows(ent_2018)
+
+
+salario_rest_3 <- GP_2016 %>%
+  bind_rows(GP_2017) %>%
+  bind_rows(GP_2018)
+
+
+
+
+
+ggplot(salario_rest_1, aes(x = Sexo, y = Salario, fill = Sexo)) +
+  stat_halfeye(adjust = 0.5, width = 0.8, .width = 0, justification = -0.2, point_colour = NA) +
+  geom_boxplot(width = 0.25, outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(aes(color = Sexo), width = 0.1, alpha = 0.7, size = 1.5) +
+  coord_flip()+
+  labs(
+  title = "Salario de las Personas Legisladoras en México por Sexo",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2015-2017",
+    x = "Sexo",  # Cambia a un nombre más interpretativo si corresponde
+    y = "Salario",  # Igual, si p representa algo específico, puedes cambiarlo
+    color = NULL,
+    fill = NULL,
+    caption = "Fuente: Elaboración propia con base en datos del INEGI"
+  ) +
+  scale_y_continuous(breaks = seq(20000, 100000, by=10000))+
+  scale_fill_manual(
+    values = c(
+      "Hombres" = "skyblue", 
+      "Mujeres" = "violet"
+    ))+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+
+ggplotly(ggplot(salario_rest_1, aes(x = Sexo, y = Salario, fill = Sexo)) +
+  stat_halfeye(adjust = 0.5, width = 0.8, .width = 0, justification = -0.2, point_colour = NA) +
+  geom_boxplot(width = 0.25, outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(aes(color = Sexo), width = 0.1, alpha = 0.7, size = 1.5) +
+  coord_flip()+
+  labs(
+    title = "Salario de las Personas Legisladoras en México por Sexo",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2015-2017",
+    x = "Sexo",  # Cambia a un nombre más interpretativo si corresponde
+    y = "Salario",  # Igual, si p representa algo específico, puedes cambiarlo
+    color = NULL,
+    fill = NULL,
+    caption = "Fuente: Elaboración propia con base en datos del INEGI"
+  ) +
+  scale_y_continuous(breaks = seq(20000, 100000, by=10000))+
+  scale_fill_manual(
+    values = c(
+      "Hombres" = "skyblue", 
+      "Mujeres" = "violet"
+    ))+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size=12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", size = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ))
+
+
+salario_rest_1 %>%
+  group_by(Sexo) %>%
+  summarise(Total_Monto = sum(Salario, na.rm = TRUE), .groups = "drop")
+
+
+ingresos_2018_f %>%
+  group_by(Sexo) %>%
+  summarise(Total_Monto = sum(Monto, na.rm = TRUE), .groups = "drop")
+
+
+
+ggplot(data = salario_rest_3, 
+       aes(x = fct_reorder(Rango_Salarial, Casos), y = Casos)) +
+  geom_smooth() +
+  coord_flip()+
+  geom_bar(mapping = aes(fill = Partido), 
+           stat = "identity", position = "fill") +
+  labs(
+    x = "Carrera", 
+    y = "Cantidad",
+    fill = "Sexo", # Cambiado para mayor claridad
+    title = "Licenciatura de las Personas Legisladoras en México",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2023",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  ))+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+salario_rest_4 <- GP_2016_f %>%
+  bind_rows(GP_2017_f) %>%
+  bind_rows(GP_2018_f)
+
+
+GP_2016_f <- GP_2016_f %>%
+  mutate(Año = 2015)
+
+GP_2017_f <- GP_2017_f %>%
+  mutate(Año = 2016)
+
+GP_2018_f <- GP_2018_f %>%
+  mutate(Año = 2017)
+
+
+
+ggplot(data = salario_rest_4, 
+       aes(x = Año, y = Monto, color=Partido)) +
+  geom_point(color="black", size=2) +
+  geom_smooth()+
+  geom_line()+
+  labs(
+    x = "Año", 
+    y = "Millones de Pesos",
+    color = NULL, # Cambiado para mayor claridad
+    title = "Salario de las Personas Legisladoras en México por Grupo Parlamentario",
+    subtitle = "En los Congresos Locales Según el Proceso Electoral 2023",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_color_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  ))+
+  scale_x_continuous(breaks = seq(2015, 2017, by=1))+
+  scale_y_continuous(breaks = seq(0, 30000000, by=5000000))+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+
+ent_2020 <- ent_2020 %>%
+  gather(key= Concepto, value=Monto, remuneracion:otro)
+
+
+ent_2020 <- ent_2020 %>% 
+  mutate(partido = case_when(
+    partido== "Movimiento de Regeneración Nacional (MORENA)" ~ "MORENA",
+    partido== "Partido Acción Nacional (PAN)" ~ "PAN",
+    partido== "Partido de la Revolución Democrática (PRD)" ~ "PRD",
+    partido== "Partido del Trabajo (PT)" ~ "PT",
+    partido== "Partido Encuentro Social (PES)" ~ "PES",
+    partido== "Partido Movimiento Ciudadano (MC)" ~ "MC",
+    partido== "Partido Nueva Alianza (PANAL)" ~ "NUAL",
+    partido== "Partido Revolucionario Institucional (PRI)" ~ "PRI",
+    partido== "Partido Verde Ecologista de México (PVEM)" ~ "PVEM",
+    partido== "Legisladores sin grupo parlamentario" ~ "Otro",
+    partido== "Legisladores independientes" ~ "Otro",
+    partido== "No especificado" ~ "Otro",
+    partido== "Otro grupo parlamentario" ~ "Otro"))
+
+
+ent_2020 %>%
+  group_by(Concepto) %>%
+  summarise(Total_Monto = sum(Monto, na.rm = TRUE), .groups = "drop")
+
+
+
+mon  <-  ent_2020 %>%
+  group_by(partido) %>%
+  summarise(Total_Monto = sum(Monto, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(Total_Monto))
+
+
+ggplot(data = mon, 
+       aes(x = partido, y = Total_Monto, color = partido, group = 1)) + 
+  geom_point(color = "black", size = 3) +
+  geom_bar(mapping = aes(fill = partido), 
+           stat = "identity", position = "dodge", alpha = 0.8) +
+  geom_line(linewidth = 0.8, color="black") +
+  labs(
+    x = "Partido Político", 
+    y = "Monto en Millones de Pesos",
+    title = "Financiamiento para el Mantenimiento de los Partidos Políticos en México",
+    subtitle = "En los Congresos Locales, 2019",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(values = c(
+    "MC" = "orange",
+    "MORENA" = "darkred",
+    "NUAL" = "skyblue",
+    "Otro" = "gray50",
+    "PAN" = "blue",
+    "PES" = "navy",
+    "PRD" = "yellow",
+    "PRI" = "green",
+    "PT" = "red",
+    "PVEM" = "lightgreen"
+  )) +
+  scale_y_continuous(breaks = seq(0, 2295802497, by = 500000000)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  guides(color = "none", fill = "none")
+
+
+
+
+
+ent_2020 <- ent_2020 %>%
+  gather(key= Concepto, value=Monto, remuneracion:otro)
+
+
+ent_2020 <- ent_2020 %>% 
+  mutate(partido = case_when(
+    partido== "Movimiento de Regeneración Nacional (MORENA)" ~ "MORENA",
+    partido== "Partido Acción Nacional (PAN)" ~ "PAN",
+    partido== "Partido de la Revolución Democrática (PRD)" ~ "PRD",
+    partido== "Partido del Trabajo (PT)" ~ "PT",
+    partido== "Partido Encuentro Social (PES)" ~ "PES",
+    partido== "Partido Movimiento Ciudadano (MC)" ~ "MC",
+    partido== "Partido Nueva Alianza (PANAL)" ~ "NUAL",
+    partido== "Partido Revolucionario Institucional (PRI)" ~ "PRI",
+    partido== "Partido Verde Ecologista de México (PVEM)" ~ "PVEM",
+    partido== "Legisladores sin grupo parlamentario" ~ "Otro",
+    partido== "Legisladores independientes" ~ "Otro",
+    partido== "No especificado" ~ "Otro",
+    partido== "Otro grupo parlamentario" ~ "Otro"))
+
+
+
+
+ggplot(data = Entidades_2022, 
+       aes(x = fct_reorder(Pertenencia, Casos), y = Casos, fill=Sexo)) +
+  geom_smooth() +
+  coord_flip()+
+  geom_bar(mapping = aes(fill = Sexo), 
+           stat = "identity", position = "dodge") +
+  labs(
+    x = "Pueblo Indígena", 
+    y = "Cantidad",
+    fill = "Sexo", # Cambiado para mayor claridad
+    title = "Pertenencia de los Pueblos Indígenas en México",
+    subtitle = "En los Congresos Locales 2021",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Hombre" = "skyblue", 
+      "Mujer" = "violet",
+      "No Binario" = "pink3"
+    ))+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+ggplotly(
+  
+  ggplot(data = Entidades_2022, 
+         aes(x = fct_reorder(Pertenencia, Casos), y = Casos)) +
+    coord_flip()+
+    geom_bar(mapping = aes(fill=Lengua_Indigena), 
+             stat = "identity", position = "dodge") +
+    labs(
+      x = "Pueblo Indígena", 
+      y = "Cantidad",
+      fill = "Sexo", # Cambiado para mayor claridad
+      title = "Pertenencia de los Pueblos Indígenas en México",
+      subtitle = "En los Congresos Locales 2021",
+      caption = "Elaboración propia con datos del INEGI"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Sí" = "skyblue", 
+        "No" = "violet",
+        "No identificado" = "pink3"
+      ))+
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+      plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+      plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+      axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.text = element_text(color = "#34495E"),
+      panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+)
+
+
+
+ggplotly(
+  
+  ggplot(data = edades_2022_Diversidad_S, 
+         aes(x = fct_reorder(Diversidad_S, Casos), y = Casos)) +
+    coord_flip()+
+    geom_bar(mapping = aes(fill=Sexo), 
+             stat = "identity", position = "dodge") +
+    labs(
+      x = "Pueblo Indígena", 
+      y = "Cantidad",
+      fill = "Sexo", # Cambiado para mayor claridad
+      title = "Pertenencia de los Pueblos Indígenas en México",
+      subtitle = "En los Congresos Locales 2021",
+      caption = "Elaboración propia con datos del INEGI"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Sí" = "skyblue", 
+        "No" = "violet",
+        "No identificado" = "pink3"
+      ))+
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+      plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+      plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+      axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+      axis.text = element_text(color = "#34495E"),
+      panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+)
+
+
+
+edades_2022_LEG <- edades_2022_LEG %>%
+  filter(Antiguedad_LEG != 999 & Antiguedad_LEG != 9997)
+
+
+edades_2022_SP<- edades_2022_SP %>%
+  filter(Antiguedad_SP != 999 & Antiguedad_SP != 9997)
+
+
+
+ggplot(data = edades_2022_SP, 
+       aes(x = Casos , y = Antiguedad_SP)) +
+  geom_boxplot(aes(fill=Sexo))+
+  labs(
+    x = "Años en el Servicio ´Público", 
+    y = "Casos",
+    fill = "Sexo", # Cambiado para mayor claridad
+    title = "Angüedad De los Legisladores en el Servicio Público",
+    subtitle = "En los Congresos Locales 2021",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Hombre" = "skyblue", 
+      "Mujer" = "violet",
+      "No identificado" = "pink3"
+    ))+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+ggplotly(ggplot(data = edades_2022_SP, 
+       aes(x = Antiguedad_SP, y = Casos)) +
+  coord_flip()+
+  geom_boxplot(aes(fill=Sexo))+
+  labs(
+    x = "Pueblo Indígena", 
+    y = "Cantidad",
+    fill = "Sexo", # Cambiado para mayor claridad
+    title = "Pertenencia de los Pueblos Indígenas en México",
+    subtitle = "En los Congresos Locales 2021",
+    caption = "Elaboración propia con datos del INEGI"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Hombre" = "skyblue", 
+      "Mujer" = "violet",
+      "No identificado" = "pink3"
+    ))+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#34495E", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, hjust = 1, color = "#95A5A6"),
+    axis.title.x = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.title.y = element_text(face = "bold", color = "#2C3E50", size = 12),
+    axis.text = element_text(color = "#34495E"),
+    panel.grid.major = element_line(color = "#D0D3D4", linewidth = 0.5),
+    panel.grid.minor = element_blank()
+  ))

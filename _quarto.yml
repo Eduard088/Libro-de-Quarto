@@ -1,17 +1,18 @@
 project:
-  type: book  
+  type: book
   title: "Limpieza de Datos"
+  output-dir: docs
 
 book:
   title: "Base de Datos"
   author: "Eduardo Barea"
-  date: "18-01-2024"
-  repo-url: https://github.com/jjallaire/hopr/
+  date: "2024-01-18"
+  repo-url: "https://github.com/jjallaire/hopr/"
   repo-actions: [edit]
   downloads: [pdf, epub]
   chapters:
     - index.qmd
-    - part: "índice"
+    - part: "Índice"
       chapters:
         - Votos_2015.qmd
         - Votos_2016.qmd
@@ -70,7 +71,7 @@ format:
 
 comments:
   hypothesis: true
-  
+
 highlight-style: vim-dark
 
 website:
